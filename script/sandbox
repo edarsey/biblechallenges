@@ -2,9 +2,6 @@
 
 require 'capybara'
 require 'pry'
-Capybara.register_driver :selenium do |app|
-    Capybara::Selenium::Driver.new(app, :browser => :chrome)
-end
 
 action = ARGV[0]
 
@@ -12,6 +9,7 @@ exit unless %w(create_challenge signup).include? action
 
  @session = Capybara::Session.new(:selenium)
  @session.driver.class.class_eval { def quit; end }
+ binding.pry
  @session.visit('http://localhost:5000')
 
 def signup
@@ -28,13 +26,9 @@ end
 
 def create_challenge
   @session.click_link "Create a challenge"
-  sleep 1
   @session.fill_in 'challenge[name]', with: "Sample Challenge"
-  sleep 1
   @session.fill_in 'challenge[begindate]', with: Date.today
-  sleep 1
   @session.fill_in 'challenge[chapters_to_read]', with: "Matthew 1-2"
-  sleep 1
   @session.click_button "Create Challenge"
 end
 
