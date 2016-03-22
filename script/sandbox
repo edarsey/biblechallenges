@@ -1,0 +1,59 @@
+#!/usr/bin/env ruby
+
+require 'capybara'
+require 'pry'
+Capybara.register_driver :selenium do |app|
+    Capybara::Selenium::Driver.new(app, :browser => :chrome)
+end
+
+action = ARGV[0]
+
+exit unless %w(create_challenge signup).include? action
+
+ @session = Capybara::Session.new(:selenium)
+ @session.driver.class.class_eval { def quit; end }
+ @session.visit('http://localhost:5000')
+
+def signup
+  random_email = "#{rand(36**10).to_s(36)}@example.com"
+  password = '123123'
+
+  @session.click_link "Sign me up!"
+  @session.fill_in "Name", with: "Johnny McBible"
+  @session.fill_in "Email", with: random_email
+  @session.fill_in "Password", with: password
+  @session.fill_in "Password confirmation", with: password
+  @session.click_button "Sign up"
+end
+
+def create_challenge
+  @session.click_link "Create a challenge"
+  sleep 1
+  @session.fill_in 'challenge[name]', with: "Sample Challenge"
+  sleep 1
+  @session.fill_in 'challenge[begindate]', with: Date.today
+  sleep 1
+  @session.fill_in 'challenge[chapters_to_read]', with: "Matthew 1-2"
+  sleep 1
+  @session.click_button "Create Challenge"
+end
+
+case action
+when 'signup'
+  signup
+when 'create_challenge'
+  signup
+  create_challenge
+end
+
+
+
+
+
+
+
+
+
+
+
+
