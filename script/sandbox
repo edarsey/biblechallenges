@@ -3,6 +3,7 @@
 require 'capybara'
 require 'pry'
 
+
 action = ARGV[0]
 
 exit unless %w(create_challenge signup).include? action
