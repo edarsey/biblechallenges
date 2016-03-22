@@ -9,7 +9,6 @@ exit unless %w(create_challenge signup).include? action
 
  @session = Capybara::Session.new(:selenium)
  @session.driver.class.class_eval { def quit; end }
- binding.pry
  @session.visit('http://localhost:5000')
 
 def signup
@@ -28,6 +27,7 @@ def create_challenge
   @session.click_link "Create a challenge"
   @session.fill_in 'challenge[name]', with: "Sample Challenge"
   @session.fill_in 'challenge[begindate]', with: Date.today
+  sleep 1
   @session.fill_in 'challenge[chapters_to_read]', with: "Matthew 1-2"
   @session.click_button "Create Challenge"
 end
